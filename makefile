@@ -7,15 +7,15 @@ INSTALL = /usr/bin/
 FILE_NOTESAVE = write.o
 FILE_NOTESHOW = show.o
 
-FILE_LIB = ./lib/e_malloc.o
+FILE_LIB = e_malloc.o
 
 ALL: compile $(NOTESAVE) $(NOTESHOW) install clean 
 
 compile:
-	gcc -o $(SRC) 
+	gcc -c $(SRC) 
 
 $(NOTESAVE): compile
-	gcc -o $(FILE_NOTESAVE) $(FILE_LIB)
+	gcc $(FILE_NOTESAVE) $(FILE_LIB)
 
 $(NOTESHOW): compile
 	gcc -o $(FILE_NOTESHOW) $(FILE_LIB)
