@@ -14,27 +14,10 @@ void usage(char *prog, char *file)
     exit(0);
 }
 
-//char *store_file = "/var/notes";
-char *store_file = "./tmp.txt";
 
-
-void write_user(unsigned int id_user, unsigned int fd)
-{
-    if(write(fd, &id_user , 4) == -1)
-    {
-        fprintf(stderr, "[ERROR]\t Error to write UID");
-        exit(1);
-    }
-}
-
-void write_content(char *content, unsigned fd)
-{
-    if(write(fd, &content, strlen(content)) == -1)
-    {
-        fprintf(stderr, "[ERROR]\t Error to write content");
-        exit(1);
-    }
-}
+#ifndef FILE 
+#   define FILE "./tmp.txt"
+#endif 
 
 void fail(char *msg_error)
 {
@@ -47,6 +30,19 @@ void fail(char *msg_error)
 }
 
 
+void write_user(unsigned int id_user, unsigned int fd)
+{
+    if(write(fd, &id_user , 4) == -1)
+        fail("fail to write UID");
+}
+
+void write_content(char *content, unsigned int fd)
+{
+    if(write(fd, &content, strlen(content) +1) == -1)
+        fail("fail to write content");
+
+}
+
 int main(int argc, char **argv )
 {
     char *buff_string;
@@ -57,26 +53,20 @@ int main(int argc, char **argv )
     buff_string = (char *)e_malloc(sizeof(char) * 100);
 
     if(argc < 2)
-        usage(argv[0], store_file);
+        usage(argv[0], FILE);
        
     strcpy(buff_string, argv[1]);
     
-    fd = open(store_file, O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR);
+    fd = open(FILE, O_WRONLY | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR);
 
     if(fd == -1)  
-    {
-        fprintf(stderr, "[ERROR]\t Error to open or create file");
-        exit(1);
-    }
+        fail("failed to open or create file");
 
     write_user(id_user, fd);
     write_content(buff_string, fd);
     
     if(close(fd) == -1 )
-    {
-        fprintf(stderr, "[ERROR]\t Error to close file");
-        exit(1);
-    }
+        fail("failed to close file");
 
     free(buff_string);
 

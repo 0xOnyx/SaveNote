@@ -4,6 +4,7 @@ SRC = write.c show.c ./lib/e_malloc.c
 
 INSTALL = /usr/bin/
 
+
 FILE_NOTESAVE = write.o
 FILE_NOTESHOW = show.o
 
@@ -15,10 +16,10 @@ compile:
 	gcc -c $(SRC) 
 
 $(NOTESAVE): compile
-	gcc $(FILE_NOTESAVE) $(FILE_LIB)
+	gcc -o $(NOTESAVE) $(FILE_NOTESAVE) $(FILE_LIB)
 
 $(NOTESHOW): compile
-	gcc -o $(FILE_NOTESHOW) $(FILE_LIB)
+	gcc -o $(NOTESHOW) $(FILE_NOTESHOW) $(FILE_LIB)
 
 install: $(NOTESAVE) $(NOTESHOW)
 	mv ./$(NOTESAVE) $(INSTALL)
