@@ -9,21 +9,26 @@ void read_bytes(int fd, int size)
 {
 
     unsigned char *bytes;
-    int i;
+    unsigned int uid;
 
-    if(read(fd, &bytes, size ) == -1)
+    if(read(fd, &uid, size ) == -1)
     {
         printf("[ERROR] TO READ");
     }
     
 
-    i = 0;
+    bytes = (unsigned char *)&uid;
 
-    while(i < 1)
+    int i = 0;
+    printf("VALUE => %d\n", uid);
+    printf("value2 = %c\n", uid);
+    while(i < size)
     {
         printf("%02x", bytes[i]);
         i++;
     }
+
+    putchar('\n');
 
 }
 
@@ -39,7 +44,12 @@ int main()
         exit(-1);
     }
 
-    read_bytes(fd, 4);
+    read_bytes(fd,4);
     
+    int i = -1;
+    while(++i < 9)
+        read_bytes(fd,1);
+    
+
     return 0;
 }

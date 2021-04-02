@@ -48,10 +48,12 @@ int found_user(unsigned int fd, unsigned id_user)
         while(bytes != '\n')
         {
             printf("OK5\n");
-            if(read(fd, &bytes, 1) != -1)
+            int test = read(fd, &bytes,1);
+            printf("VALUE =>%d\n", test);
+            if(read(fd, &bytes, 1) == -1)
                 return -1;
-            
-            printf("OK6%c\n",bytes);
+
+            printf("OK6%d\n",bytes);
             lenght++;
         }
     }
