@@ -16,7 +16,7 @@ void usage(char *prog, char *file)
 
 
 #ifndef FILE 
-#   define FILE "./tmp.txt"
+#   define FILE "/var/note.priv"
 #endif 
 
 void fail(char *msg_error)
@@ -27,6 +27,8 @@ void fail(char *msg_error)
      strncat(buff_msg, msg_error, 90);
 
      perror(buff_msg);
+
+     exit(1);
 }
 
 
@@ -38,7 +40,7 @@ void write_user(unsigned int id_user, unsigned int fd)
 
 void write_content(char *content, unsigned int fd)
 {
-    if(write(fd, &content, strlen(content) +1) == -1)
+    if(write(fd, content, strlen(content) +1) == -1)
         fail("fail to write content");
 
 }

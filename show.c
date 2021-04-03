@@ -8,7 +8,7 @@
 
 
 #ifndef FILE 
-#   define FILE "./tmp.txt"
+#   define FILE "/var/note.priv"
 #endif 
 
 void fail(char *msg_error)
@@ -17,48 +17,38 @@ void fail(char *msg_error)
     
     strcpy(buff_msg, "[ERROR]\t");
     strncat(buff_msg, msg_error, 90);
-
     perror(buff_msg);
+
+    exit(1);
 }
 
-int found_user(unsigned int fd, unsigned id_user)
+int found_user(unsigned int fd, unsigned int id_user)
 {
     unsigned int buff_id;
-    int lenght;
     unsigned char bytes;
-
+    int lenght;
+    
     lenght = 0;
 
     while(buff_id != id_user)
     {
-        printf("OK3\n");
-
         if(read(fd, &buff_id, 4) == -1 )
             return -1;
 
-        //séprateur de ligne 1 bytes
-        if(read(fd, &bytes, 1) == -1)
-            return -1;
 
-        printf("OK4\n");
-        printf("%d\n", buff_id);
-
-        bytes = 0;
-
-        while(bytes != '\n')
+        bytes = 'a';
+        
+        while(bytes != '\0')
         {
-            printf("OK5\n");
-            int test = read(fd, &bytes,1);
-            printf("VALUE =>%d\n", test);
-            if(read(fd, &bytes, 1) == -1)
+            if(read(fd, &bytes, 1) != 1)
                 return -1;
 
-            printf("OK6%d\n",bytes);
             lenght++;
         }
     }
+
     #ifdef DEBUG
-        printf("\t [DEBUG] Founded %d bytes for user %d ID", lenght, id_user);
+        printf("\t [DEBUG] Founded %d bytes for user %d ID\n", lenght, id_user);
     #endif
 
     lseek(fd, lenght * -1 , SEEK_CUR);
@@ -107,7 +97,6 @@ int found_Note(unsigned int fd, unsigned int id_user, char *searching_buff)
     int note_lenght;
 
     note_lenght = found_user(fd, id_user);
-    printf("OK2\n");
 
     if(note_lenght == -1)
         return -1;
@@ -116,7 +105,6 @@ int found_Note(unsigned int fd, unsigned int id_user, char *searching_buff)
 
     buff_note[note_lenght] = '\0';
 
-    printf("OK1%s\n", buff_note);
     
     if(search_note(buff_note, searching_buff))
     {
@@ -148,14 +136,16 @@ int main(int argv, char **argc)
     if(fd == -1)
         fail("failed to open file");
 
+    id_user = getuid();
+
     founded_note = 1;
 
-    printf("===============[NOTE]===============");
-    while(founded_note){
-        printf("\n\n");
+    puts("===============[NOTE]===============");
+    while(founded_note != -1){
+        putchar('\n');
         founded_note = found_Note(fd, id_user, searching_buff);
-        printf("%d\n", founded_note);
     }
+    puts("===============[END]================");
 
     if(close(fd) == -1)
         fail("failed to close file");
